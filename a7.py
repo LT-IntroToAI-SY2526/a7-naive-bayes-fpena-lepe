@@ -50,54 +50,33 @@ class BayesClassifier:
         # provided default `(None, None, [])` if the generator has no values)
         _, __, files = next(os.walk(self.training_data_directory), (None, None, []))
         if not files:
-            raise RuntimeError(f"Couldn't find path {self.training_data_directory}")
+            raise RuntimeError("Couldn't find path " + self.training_data_directory)
 
-        # files now holds a list of the filenames
-        # self.training_data_directory holds the folder name where these files are
-        
+        file_list = list(files)
 
-        # stored below is how you would load a file with filename given by `fName`
-        # `text` here will be the literal text of the file (i.e. what you would see
-        # if you opened the file in a text editor
-        # text = self.load_file(os.path.join(self.training_data_directory, fName))
+        total_files = len(file_list)
 
+        for index, filename in enumerate(file_list, 1):  
+            print("Training on file " + str(index) +
+                " of " + str(total_files) + ": " + filename)
 
-        # *Tip:* training can take a while, to make it more transparent, we can use the
-        # enumerate function, which loops over something and has an automatic counter.
-        # write something like this to track progress (note the `# type: ignore` comment
-        # which tells mypy we know better and it shouldn't complain at us on this line):
-        # for index, filename in enumerate(files, 1): # type: ignore
-        #     print(f"Training on file {index} of {len(files)}")
-        #     <the rest of your code for updating frequencies here>
+            is_pos = filename.startswith(self.pos_file_prefix)
+            is_neg = filename.startswith(self.neg_file_prefix)
 
+            if not is_pos and not is_neg:
+                continue
 
-        # we want to fill pos_freqs and neg_freqs with the correct counts of words from
-        # their respective reviews
-        
-        # for each file, if it is a negative file, update (see the Updating frequencies
-        # set of comments for what we mean by update) the frequencies in the negative
-        # frequency dictionary. If it is a positive file, update (again see the Updating
-        # frequencies set of comments for what we mean by update) the frequencies in the
-        # positive frequency dictionary. If it is neither a postive or negative file,
-        # ignore it and move to the next file (this is more just to be safe; we won't
-        # test your code with neutral reviews)
-        
+            filepath = os.path.join(self.training_data_directory, filename)
+            text = self.load_file(filepath)
+            tokens = self.tokenize(text)
 
-        # Updating frequences: to update the frequencies for each file, you need to get
-        # the text of the file, tokenize it, then update the appropriate dictionary for
-        # those tokens. We've asked you to write a function `update_dict` that will make
-        # your life easier here. Write that function first then pass it your list of
-        # tokens from the file and the appropriate dictionary
-        
+            if is_pos:
+                self.update_dict(tokens, self.pos_freqs)
+            elif is_neg:
+                self.update_dict(tokens, self.neg_freqs)
 
-        # for debugging purposes, it might be useful to print out the tokens and their
-        # frequencies for both the positive and negative dictionaries
-        
-
-        # once you have gone through all the files, save the frequency dictionaries to
-        # avoid extra work in the future (using the save_dict method). The objects you
-        # are saving are self.pos_freqs and self.neg_freqs and the filepaths to save to
-        # are self.pos_filename and self.neg_filename
+        self.save_dict(self.pos_freqs, self.pos_filename)
+        self.save_dict(self.neg_freqs, self.neg_filename)
 
     def classify(self, text: str) -> str:
         """Classifies given text as positive, or negative from calculating the
