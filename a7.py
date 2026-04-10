@@ -53,23 +53,18 @@ class BayesClassifier:
             raise RuntimeError("Couldn't find path " + self.training_data_directory)
 
         file_list = list(files)
-
         total_files = len(file_list)
 
         for index, filename in enumerate(file_list, 1):  
             print("Training on file " + str(index) +
                 " of " + str(total_files) + ": " + filename)
-
             is_pos = filename.startswith(self.pos_file_prefix)
             is_neg = filename.startswith(self.neg_file_prefix)
-
             if not is_pos and not is_neg:
                 continue
-
             filepath = os.path.join(self.training_data_directory, filename)
             text = self.load_file(filepath)
             tokens = self.tokenize(text)
-
             if is_pos:
                 self.update_dict(tokens, self.pos_freqs)
             elif is_neg:
@@ -88,7 +83,6 @@ class BayesClassifier:
         Returns:
             classification, either positive, or negative
         """
-        # tokenize input text
         tokens = self.tokenize(text)
 
         pos_prob = 0.0
