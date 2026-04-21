@@ -104,6 +104,8 @@ class BayesClassifier:
             pos_prob += pos_likelihood
             neg_prob += neg_likelihood
 
+        print(f"Negative Probability: {neg_prob}")
+        print(f"Positive Probability: {pos_prob}")
 
         if pos_prob > neg_prob:
             return "positive"
@@ -238,9 +240,14 @@ if __name__ == "__main__":
     print(f"P('terrible'| pos) {(b.pos_freqs['terrible']+1)/pos_denominator}")
     print(f"P('terrible'| neg) {(b.neg_freqs['terrible']+1)/neg_denominator}")
 
-    print("\nThe following should all be positive.")
-    print(b.classify('I love computer science'))
-    print(b.classify('this movie is fantastic'))
-    print("\nThe following should all be negative.")
-    print(b.classify('rainy days are the worst'))
-    print(b.classify('computer science is terrible'))
+    #print("\nThe following should all be positive.")
+    #print(b.classify('I love computer science'))
+    #print(b.classify('this movie is fantastic'))
+    #print("\nThe following should all be negative.")
+    #print(b.classify('rainy days are the worst'))
+    #print(b.classify('computer science is terrible'))
+    
+    print(b.classify("legendary movie. top 5 greatest of all time in my oppinion"))
+    print(b.classify("Interstellar is more than a visually stunning sci-fi epic—it’s a meditation on the nature of time, space, and human connection. Beneath its exploration of black holes and distant galaxies lies a deeper idea: that reality may not be as fixed or separate as we perceive. The film elevates love beyond emotion, portraying it as a force that transcends dimensions and links people across time. "))
+    print(b.classify("Man, I can make it through some rough films but I really feel like this is the bottom of the barrel and then several levels below that."))
+    print(b.classify("Quite possibly the worst movie I've ever seen. Bottom line, he didn't have to go on the mission. He ruined his life, as well as his families. You have to have some strong psychological issues to like this movie. Horrible"))
